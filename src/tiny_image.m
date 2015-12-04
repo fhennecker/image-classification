@@ -6,7 +6,9 @@ X = [];
 % targets (classes)
 T = [];
 
-% training
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TRAINING
+
 classes = dir('../images/training/');
 cid = 1; % class index
 i = 1; % current training image index
