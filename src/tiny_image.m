@@ -31,3 +31,12 @@ for class={classes.name}
     cid = cid+1;
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PREDICTION
+
+img = imread('../images/testing/0.jpg');
+imshow(img)
+timg = make_tiny_image('../images/testing/0.jpg');
+vector = reshape(timg.', 1, []);
+class_index = knn(X, T, vector, 5);
+class = classes(class_index).name
