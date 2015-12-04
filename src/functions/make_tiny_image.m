@@ -38,7 +38,7 @@ function [ tiny_image ] = make_tiny_image( filename, s )
             
             tiny_image(ty, tx) = total/divider;
             % unit-length, zero-centered
-            %tiny_image(ty, tx) = tiny_image(ty, tx)/255 - 0.5
+            tiny_image(ty, tx) = tiny_image(ty, tx)/255 - 0.5;
             ty = ty+1;
         end
         ty = 1;
