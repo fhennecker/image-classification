@@ -33,12 +33,14 @@ function [ tiny_image ] = make_tiny_image( filename, s )
             % w_start, h_start, w_end and h_end define the square of the
             % original image to be averaged in one pixel of tiny_image
             
+            % simple arithmetic average
             total = sum(sum(original(h_start:h_end, w_start:w_end)));
             divider = (w_end-w_start)*(h_end-h_start);
-            
             tiny_image(ty, tx) = total/divider;
+
             % unit-length, zero-centered
             tiny_image(ty, tx) = tiny_image(ty, tx)/255 - 0.5;
+
             ty = ty+1;
         end
         ty = 1;
