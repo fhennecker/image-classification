@@ -12,5 +12,6 @@ function [ class ] = knn( X, T, input, k)
             i = i+1;
         end
     end
+    class = mode(closest(:, 2)); % most frequent number in closest's 2nd col
 end
 
