@@ -24,6 +24,7 @@ for class={classes.name}
             image = image{1};
             timg = make_tiny_image(sprintf('../images/training/%s/%s', class, image));
             vector = reshape(timg.', 1, []);
+            %imshow(mat2gray(timg), 'InitialMagnification', 1000);
             X(i+1, :) = vector;
             T(i+1) = cid;
             i = i+1;
