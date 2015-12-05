@@ -11,7 +11,7 @@ function [ tiny_image ] = make_tiny_image( filename, s )
     
     [h, w] = size(original);
     [top, bot, left, right] = deal(1, h, 1, w);
-    square_size = floor(w/s);
+    square_size = ceil(w/s);
     if (w < h)
         % portrait image, cropping
         top = round((h-w)/2);
@@ -20,7 +20,7 @@ function [ tiny_image ] = make_tiny_image( filename, s )
         % landscape image, cropping
         left = round((w-h)/2);
         right = right - round((w-h)/2);
-        square_size = floor(h/s);
+        square_size = ceil(h/s);
     end
     
     
