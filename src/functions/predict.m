@@ -15,6 +15,8 @@ function [ output_args ] = predict( output_file, classes, w, C, type, param_name
             [f, d] = vl_phow(single(I), param_name, param_value);
         elseif type == 'sift'
             [f, d] = vl_sift(single(I), param_name, param_value);
+        elseif type == 'patch'
+                d = extract_patches(single(I));
         end
 
         % building histogram
