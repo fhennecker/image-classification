@@ -14,8 +14,9 @@ for class={classes.name}
 end
 
 %% Extracting features
+
 % % feature vectors
-% X = [];
+% X1 = [];
 % 
 % cid = 1; % class index
 % i = 1; % current training feature index
@@ -30,148 +31,46 @@ end
 %         I = imread(sprintf('../images/training/%s/%s', class, image));
 %         [f, d] = vl_sift(single(I), 'PeakThresh', 10);
 %         for descriptor=1:size(d, 2)
-%             X(i+1, :) = d(:, descriptor).';
+%             X1(i+1, :) = d(:, descriptor).';
 %             i = i+1;
 %         end
 %     end
 % 
 %     cid = cid+1;
+%     size(X1)
 % end
+
 
 %% Building the codebook
-
-% [idx, C] = kmeans(X, 500);
-
-
-%% Building histograms
-
-% % Histograms
-% H = [];
 % 
-% % targets (classes)
-% T = [];
-% 
-% cid = 1; % class index
-% i = 1; % current training image index
-% for class={classes.name}
-%     class = class{1};
-% 
-%     disp(sprintf('Training with class %s', class));
-% 
-%     images = dir(sprintf('../images/training/%s/*.jpg', class));
-%     for image={images.name}
-%         image = image{1};
-%         I = imread(sprintf('../images/training/%s/%s', class, image));
-%         [f, d] = vl_sift(single(I), 'PeakThresh', 10);
-%         
-%         % building histogram
-%         H(i, :) = zeros(1, size(C, 1)); 
-%         for descriptor=1:size(d, 2)
-%             % quantize descriptor
-%             repid = quantizevec(d(:, descriptor).', C);
-%             H(i, repid) = H(i, repid)+1;
-%             T(i) = cid;
-%         end
-%         i = i+1;
-%     end
-%     cid = cid+1;
-% end
+% [idx, C1] = kmeans(X1, 500);
+
+
+%% Building histograms and targets
+
+[H1, T1] = build_hist_targets(classes, [0:99], C1', 'sift', 'PeakThresh', 10);
+
+
+%% Cross-validating model accuracy
+
+accuracies = cross_validation(H1, T1, classes, C1', 'sift', 'PeakThresh', 10);
+mean_accuracies = mean(accuracies)
+std_accuracies = std(accuracies)
+
+general_accuracy = mean(mean_accuracies)
+
 
 %% Training classifier
 
-% hom.kernel = 'KChi2';
-% hom.order = 2;
-% 
-% HHKM = vl_svmdataset(H.', 'homkermap', hom);
-% 
-% % one-vs-all classifier
-% w = zeros(15, size(H, 2));
-% for i=1:15
-%     t = zeros(1, size(T,2));
-%     for ti=1:size(T,2)
-%         if T(ti) == i
-%             t(ti) = 1;
-%         else
-%             t(ti) = -1;
-%         end
-%     end
-%     w(i, :) = vl_svmtrain(H.', t, 0.01)';
-% end
-% 
-% %% Testing classifier
-% 
-% cid = 1; % class index
-% i = 1; % current training image index
-% for class={classes.name}
-%     class = class{1};
-% 
-%     disp(sprintf('Testing with class %s', class));
-%     
-%     total = 0;
-%     correct = 0;
-% 
-%     images = dir(sprintf('../images/training/%s/*.jpg', class));
-%     for image={images.name}
-%         image = image{1};
-%         I = imread(sprintf('../images/training/%s/%s', class, image));
-%         [f, d] = vl_sift(single(I), 'PeakThresh', 10);
-%         
-%         % building histogram
-%         hist = zeros(1, size(C, 1)); 
-%         for descriptor=1:size(d, 2)
-%             % quantize descriptor
-%             repid = quantizevec(d(:, descriptor).', C);
-%             hist(repid) = hist(repid)+1;
-%         end
-%         
-%         % classifying with 1vsAll
-%         ccount = zeros(1, 15);
-%         for c=1:15
-%             val = hist*w(c, :)';
-%             if val > 0
-%                 ccount(c) = ccount(c)+val;
-%             else
-%                 ccount = ccount -val;
-%                 ccount(c) = ccount(c)+val;
-%             end
-%         end
-%         [M, predicted] = max(ccount);
-%         
-%         total = total+1;
-%         %disp(sprintf('cid : %d, res : %d', cid, round(hist*w)))
-%         if predicted == cid
-%             correct = correct+1;
-%         end
-%         i = i+1;
-%     end
-%     disp(sprintf('Total : %d, correct : %d', total, correct));
-%     cid = cid+1;
-% end
+hom.kernel = 'KChi2';
+hom.order = 2;
+
+HHKM = vl_svmdataset(H.', 'homkermap', hom);
+
+w = one_vs_all(H1, T1);
 
 
-for i=0:1313
-    I = imread(sprintf('../images/testing/%d.jpg', i));
-    [f, d] = vl_sift(single(I), 'PeakThresh', 10);
+%% Predicting test set
 
-    % building histogram
-    hist = zeros(1, size(C, 1)); 
-    for descriptor=1:size(d, 2)
-        % quantize descriptor
-        repid = quantizevec(d(:, descriptor).', C);
-        hist(repid) = hist(repid)+1;
-    end
-    
-    ccount = zeros(1, 15);
-    for c=1:15
-        val = hist*w(c, :)';
-        if val > 0
-            ccount(c) = ccount(c)+val;
-        else
-            ccount = ccount -val;
-            ccount(c) = ccount(c)+val;
-        end
-    end
-    [M, predicted] = max(ccount);
-    disp(sprintf('%d.jpg : %s', i, classes(predicted).name));
-end
-
+% output_file = fopen('run3.txt', 'w');
+% predict(output_file, classes, w, C1', 'sift', 'PeakThresh', 10);
