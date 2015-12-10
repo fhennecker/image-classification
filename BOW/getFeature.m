@@ -4,6 +4,8 @@ function words = getFeature(path,classes,images, patchSize)
 
 %patch_all = zeros(patchSize*patchSize, )
 patch_all_name = 'data/patchFeatures.mat';
+word = 'data/words.mat';
+
 column = 1;
 N = length(images);
 for class = {classes.name}
@@ -27,7 +29,9 @@ for class = {classes.name}
         k = 1;
         j = j + 48;
     end
+    j = 1;
   end
+  
   features;
   save(patch_all_name,'patch_all');
  end
@@ -41,8 +45,10 @@ save(patch_all_name,'patch_all');
 k = 500; %not sure about the k value, will test different value of k later
 [C,~] = vl_kmeans(patch_all,k);
 words = C;
+save(word,'words');
+
 
 end
-%I need to save a .mat for storing the name of these features
+
 
             

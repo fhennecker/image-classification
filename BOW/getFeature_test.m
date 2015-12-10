@@ -29,7 +29,9 @@ N = length(images);
         k = 1;
         j = j + 48;
     end
+      j = 1;
   end
+
   features;
   save(patch_all_name,'patch_all');
  %end

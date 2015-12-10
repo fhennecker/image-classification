@@ -39,7 +39,7 @@ column = 1;
      feature = single(feature);
      %feature_vector = reshape(features',1,[])';
      
-     [x,y] = size(feature);%should be x*1
+     [x,y] = size(feature);
 %     distances = zeros(V,1);
 %     while j <= y
 %         for k = 1:V;
@@ -56,7 +56,9 @@ column = 1;
 %    hist = hist/norm(hist);
 %feature_vector;
   % for n = 1:y
-  feature;
+  j =1;
+  i;
+  feature
     hist_test = getHistogram(feature,words);
     feature_hist(i,:) = hist_test;
    %end

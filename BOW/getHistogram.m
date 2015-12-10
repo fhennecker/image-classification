@@ -18,13 +18,13 @@ distances = zeros(y,1);
         end
     end
     [~,index] = ismember(min(distances),distances);
-    distances(index)
-    index
+     distances(index);
+    index;
     feat_hist(1,index) = feat_hist(1,index)+1;
   end
   sum(feat_hist);
  feat_hist = feat_hist/sum(feat_hist);
  img_hist = feat_hist;
-
+ %save(¡®idontknow.txt¡¯);
  %end
 end

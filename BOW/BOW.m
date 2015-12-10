@@ -25,23 +25,88 @@ for class = {classes.name}
         
         %class_name = {classes.name};
        % words = getFeature(sprintf('images/training/%s/%s', class, image),patch_size);
+        %label = {classes.name}';
      end
 end
 
-%if exist('data/patchFeatures.mat')
-%    words = load('data/patchFeatures.mat');
+
+    
 %else
-    words = getFeature(data_image_train_path,classes,image,patch_size);  
+
+
+ %words = getFeature(data_image_train_path,classes,image,patch_size);  
 %end
- images_test = dir(sprintf('images/testing/*.jpg'));
- image_test = {images_test.name}';
+
+
 %if exist('data/patchFeatures_test.mat')
 %    words_test = load('data/patchFeatures_test.mat');
 %else
-    words_test = getFeature_test(data_image_test_path,image_test,patch_size);  
+   %words_test = getFeature_test(data_image_test_path,image_test,patch_size);  
 %end
 %load('.mat');
-image_hist = calculatePatch(words_test,words,data_image_test_path,classes,image_test(3),patch_size);
+   %image_hist = calculatePatch(words_test,words,data_image_test_path,classes,image_test(3),patch_size);
 
 %image_hist = getHistogram(words_test, words);
-%
+
+images_test = dir(sprintf('images/testing/*.jpg'));
+image_test = {images_test.name}';
+
+label = {classes.name}';
+for i = 1:15
+    labels(i) = label(i+3);
+end
+labels = labels';
+k = 1;
+for j = 1:15
+    for i = 1:100
+    train_labels(k) = labels(j);
+    k = k+1;
+    end
+end
+
+train_labels = train_labels';
+
+
+
+
+
+if exist('data/words.mat')    %get train features
+    words_train = load('data/words.mat');
+    words_train = words_train.words;
+    words = words_train;
+else
+    words = getFeature(data_image_train_path,classes,image,patch_size); 
+    words_train = words;
+end
+
+
+if exist('data/patchFeatures_test.mat')    %get test features
+    words_test_features = load('data/patchFeatures_test.mat');
+    words_test_features = words_test_features.patch_all;
+else
+    words_test_features = getFeature_test(data_image_test_path,image_test,patch_size); 
+end
+
+
+if exist('data/features_histogram.mat')   %make test words
+    words_test = load('data/features_histogram.mat');    
+    test_features = words_test.feature_hist;
+else
+    test_features = calculatePatch(words_test_features,words,data_image_test_path,classes,image_test, patch_size);
+end
+
+
+%(words_train,words, path,classes,images,patchSize)
+if exist('data/features_histogram_train.mat')  %make train words
+    words_train = load('data/features_histogram_train.mat');
+    train_features = words_train.feature_hist_train;
+else
+    train_features = calculatePatch_train(words_train,words,data_image_train_path,classes,image,patch_size );
+end 
+
+
+classify = svm_classify(train_features,test_features,train_labels);
+
+
+
+
