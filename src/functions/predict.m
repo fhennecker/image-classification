@@ -1,5 +1,9 @@
-function [ output_args ] = predict( output_file, classes, w, C, type, param_name, param_value )
+function [ output_args ] = predict( output_file, classes, w, C, type, param_name, param_value, hkm)
 %PREDICT Write the results of our prediction to an output file
+
+    if nargin == 7
+        hkm = 0;
+    end
 
     images = dir(sprintf('../images/testing/*.jpg'));
     for image={images.name}
@@ -19,6 +23,10 @@ function [ output_args ] = predict( output_file, classes, w, C, type, param_name
             % quantize descriptor
             repid = quantizevec(d(:, descriptor), C);
             hist(repid) = hist(repid)+1;
+        end
+        
+        if hkm == 1
+            hist = vl_homkermap(hist', 2)';
         end
 
         ccount = zeros(1, size(w, 2));
