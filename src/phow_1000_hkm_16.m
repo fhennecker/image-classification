@@ -2,6 +2,8 @@ addpath('functions');
 
 run('vlfeat/toolbox/vl_setup')
 
+load('best.mat');
+
 classes = dir('../images/training/');
 i = 1;
 for class={classes.name}
@@ -65,10 +67,10 @@ end
 
 %% Training classifier
 
-% w = one_vs_all(H3, T3, 1);
+w = one_vs_all(H3, T3, 1);
 
 
 %% Predicting test set
 
-% output_file = fopen('run3.txt', 'w');
-% predict(output_file, classes, w, C3', 'phow', 'Step', 64, 1);
+output_file = fopen('run3.txt', 'w');
+predict(output_file, classes, w, C3', 'phow', 'Step', 64, 1);
