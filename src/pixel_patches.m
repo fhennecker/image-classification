@@ -67,4 +67,4 @@ w = one_vs_all(H4, T4, 1);
 %% Predicting test set
 
 output_file = fopen('run3.txt', 'w');
-predict(output_file, classes, w, C4', 'phow', 'Step', 64, 1);
+predict(output_file, classes, w, C4', 'patch');
