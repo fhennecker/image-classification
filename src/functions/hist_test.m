@@ -1,6 +1,10 @@
-function [ accuracies ] = hist_test( classes, images, C, w, type, param_name, param_value )
+function [ accuracies ] = hist_test( classes, images, C, w, type, param_name, param_value, hkm )
 %HIST_TEST Summary of this function goes here
 %   Detailed explanation goes here
+
+    if nargin == 7
+        hkm = 0;
+    end
         
     cid = 1; % class index
     i = 1; % current training image index
@@ -27,6 +31,10 @@ function [ accuracies ] = hist_test( classes, images, C, w, type, param_name, pa
                 % quantize descriptor
                 repid = quantizevec(d(:, descriptor), C);
                 hist(repid) = hist(repid)+1;
+            end
+            
+            if hkm == 1
+                hist = vl_homkermap(hist', 2)';
             end
             
             % classifying with 1vsAll
