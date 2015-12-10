@@ -149,7 +149,7 @@ end
 % end
 
 
-for i=0:99
+for i=0:1313
     I = imread(sprintf('../images/testing/%d.jpg', i));
     [f, d] = vl_sift(single(I), 'PeakThresh', 10);
 
@@ -172,6 +172,6 @@ for i=0:99
         end
     end
     [M, predicted] = max(ccount);
-    disp(sprintf('Image %d.jpg : %s', i, classes(predicted).name));
+    disp(sprintf('%d.jpg : %s', i, classes(predicted).name));
 end
 
